@@ -1,0 +1,15 @@
+{
+    "$schema": "https://json.schemastore.org/chrome-manifest.json",
+    "manifest_version": 3,
+    "name": "luckit",
+    "version": "1.0",
+    "description": "stay tunned your friend moments",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "icons": {
+        "48": "src/assets/icon48.png",
+        "128": "src/assets/icon128.png"
+    },
+    "permissions": []
+}
