@@ -75,6 +75,10 @@ input {
     font-weight: 500;
     width: 100%;
     transition: 0.2s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 
     &.btn-soft {
         background: #502e44;

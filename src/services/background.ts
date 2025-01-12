@@ -70,6 +70,22 @@ async function FetchLatestMoment() {
         return;
     }
 
+    if (await new Promise((res) => {
+        chrome.storage.local.get(['moments'], (result) => {
+            if (result.moments) {
+                if (result.moments.some((m: SavedMomentType) => m.md5 === thisMoment.md5)) {
+                    console.log("moment already saved");
+                    res(false);
+                    return;
+                }
+            }
+
+            res(true);
+        });
+    }) === false) {
+        return;
+    }
+
     const thisUser = await API.fetchUser(thisMoment.user, token);
 
     if (!thisUser?.data?.uid) {
@@ -77,46 +93,44 @@ async function FetchLatestMoment() {
         return;
     }
 
-    await new Promise((res) => {
-        fetch(thisMoment.thumbnail_url, {
-            mode: 'no-cors'
-        })
-            .then(response => response.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = function () {
-                    const base64String = reader.result;
-                    chrome.storage.local.set({ ['moment_img']: base64String }, () => {
-                        res(true);
-                    });
-                };
-                reader.readAsDataURL(blob);
-            })
-            .catch(error => {
-                console.error('Failed to fetch and save image:', error);
-                res(false);
+    chrome.storage.local.get(['unReadMoments', 'moments'], (result) => {
+        chrome.storage.local.set({
+            lastMD5: currentMD5,
+            unReadMoments: result.unReadMoments + 1 || 1,
+            moments: [
+                {
+                    user: {
+                        username: thisUser.data.first_name + " " + thisUser.data.last_name,
+                        avatar: thisUser.data.profile_picture_url,
+                        uid: thisUser.data.uid
+                    },
+                    md5: thisMoment.md5,
+                    thumbnail_url: thisMoment.thumbnail_url,
+                    seconds: thisMoment.date._seconds * 1000,
+                    caption: thisMoment.caption
+                } as SavedMomentType,
+                ...result.moments || [],
+            ] as SavedMomentType[],
+        }, () => {
+            chrome.runtime.sendMessage({ newMoment: true });
+            chrome.action.setBadgeBackgroundColor({ color: '#C773AF' }, () => {
+                chrome.action.setBadgeText({ text: (result.unReadMoments + 1).toString() });
             });
-    })
-
-    chrome.storage.local.set({
-        lastMD5: currentMD5,
-        moment: {
-            user: {
-                username: thisUser.data.first_name + " " + thisUser.data.last_name,
-                avatar: thisUser.data.profile_picture_url,
-                uid: thisUser.data.uid
-            },
-            md5: thisMoment.md5,
-            thumbnail_url: thisMoment.thumbnail_url,
-            seconds: thisMoment.date._seconds * 1000,
-            caption: thisMoment.caption
-        } as SavedMomentType
-    }, () => chrome.runtime.sendMessage({ newMoment: true }));
+        });
+    });
 }
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.fetchLatestMoment) {
         FetchLatestMoment();
+        return;
+    }
+
+    if (message.clearBadge) {
+        chrome.storage.local.set({ unReadMoments: 0 }, () => {
+            chrome.action.setBadgeText({ text: '' });
+        });
+        return;
     }
 });
 
