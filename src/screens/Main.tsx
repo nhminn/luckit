@@ -55,13 +55,15 @@ export default function MainScreen() {
             if (result.moments) {
                 chrome.runtime.sendMessage({ clearBadge: true });
                 setMomentLoaded(result.moments as SavedMomentType[]);
-                isNew && setInItem(p => {
-                    if (p > 0) {
-                        setShowNewItemBtn(true);
-                        return p + 1;
-                    }
-                    return 0;
-                });
+                if (isNew) {
+                    setInItem(p => {
+                        if (p > 0) {
+                            setShowNewItemBtn(true);
+                            return p + 1;
+                        }
+                        return 0;
+                    });
+                }
             }
         });
     }
