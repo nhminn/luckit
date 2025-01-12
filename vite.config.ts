@@ -10,7 +10,9 @@ export default defineConfig({
     react(),
     // @ts-expect-error why?
     crx({ manifest }),
-    ViteMinifyPlugin()
+    ViteMinifyPlugin({
+      ignoreCustomComments: []
+    })
   ],
   build: {
     cssCodeSplit: false,
