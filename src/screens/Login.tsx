@@ -65,7 +65,7 @@ export default function LoginScreen() {
             <div className={clsx(cls.LoginWarn)}>
                 <div className={cls.Content}>
                     <h1>Before you login...</h1>
-                    <p>By using this extension, you acknowledge that it is an unofficial Locket client, and you accept the risk that your account may be banned.
+                    <p>This project is not affiliated with Locket or Locket Labs, Inc in anyway. By using this extension, you acknowledge that it is an unofficial Locket client, and you accept the risk that your account may be banned.
                         <br />
                         If you are not comfortable with this or you don't know what you are doing, please do not use this extension and remove it from your browser.
                         <br />
