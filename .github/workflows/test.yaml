@@ -27,7 +27,7 @@ jobs:
         run: pnpm run type-check
 
       - name: ESLint
-        run: pnpm run test
+        run: pnpm run lint
 
       - name: Try to build
         run: pnpm run build
