@@ -1,0 +1,33 @@
+name: Test build extension
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "vite.config.ts"
+      - ".github/workflows/*"
+  pull_request:
+    paths:
+      - "src/**"
+      - "vite.config.ts"
+      - ".github/workflows/*"
+  workflow_dispatch:
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm i -g pnpm && pnpm install
+
+      - name: TypeScript
+        run: pnpm run type-check
+
+      - name: ESLint
+        run: pnpm run test
+
+      - name: Try to build
+        run: pnpm run build
