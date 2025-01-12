@@ -69,7 +69,7 @@ export default function MainScreen() {
                             }
                         </div>
                         <div className={cls.UserInfo}>
-                            <img className={cls.Avatar} alt="" src={momentLoaded?.user.avatar} />
+                            {momentLoaded?.user.avatar && <img className={cls.Avatar} alt="" src={momentLoaded?.user.avatar} />}
                             <span className={cls.Name}>
                                 {momentLoaded?.user.username}
                             </span>

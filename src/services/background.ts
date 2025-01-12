@@ -1,7 +1,6 @@
 import { SavedMomentType } from "../types/moments";
 import { API } from "./api";
-
-console.log("is service worker running?");
+import { md5 } from 'js-md5';
 
 async function FetchLatestMoment() {
     let token = "", refreshToken = "";
@@ -21,28 +20,33 @@ async function FetchLatestMoment() {
         return;
     }
 
-    // test token by get user data
-    const user = await API.getAccountInfo(token);
+    try {
+        await API.getAccountInfo(token);
+    } catch (e: any) {
+        if (e?.error?.message === "Unauthenticated") {
+            try {
+                const newToken = await API.refreshToken(refreshToken);
 
-    if (!user.users[0]) {
-        const newToken = await API.refreshToken(refreshToken);
+                if (!newToken.access_token) {
+                    chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
+                        chrome.runtime.sendMessage({ logout: true });
+                        console.log("token expired, please login again");
+                    });
+                    return;
+                }
 
-        if (!newToken.access_token) {
-            // logout
-            chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
-                chrome.runtime.sendMessage({ logout: true });
-                console.log("token expired, please login again");
-            });
-            return;
+                token = newToken.access_token;
+                refreshToken = newToken.refresh_token;
+
+                chrome.storage.local.set({
+                    token,
+                    refreshToken
+                });
+            } catch (e: any) {
+                console.error("Cannot refresh token", e);
+                return;
+            }
         }
-
-        token = newToken.access_token;
-        refreshToken = newToken.refresh_token;
-
-        chrome.storage.local.set({
-            token,
-            refreshToken
-        });
     }
 
     const moment = await API.fetchLatestMoment(token);
@@ -53,12 +57,12 @@ async function FetchLatestMoment() {
     }
 
     const lastMD5 = await new Promise<string>((res) => {
-        chrome.storage.local.get('lastMD5', (result) => {
+        chrome.storage.local.get(['lastMD5'], (result) => {
             res(result.lastMD5 || "");
         });
     });
 
-    const currentMD5 = moment.data[0].md5;
+    const currentMD5 = md5(JSON.stringify(moment.data[0]));
     const thisMoment = moment.data[0];
 
     if (lastMD5 === currentMD5) {
@@ -116,6 +120,14 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
-setInterval(() => {
-    FetchLatestMoment();
-}, 30e3);
+function loop() {
+    setTimeout(async () => {
+        await FetchLatestMoment();
+        loop();
+    }, 25e3);
+}
+
+(async () => {
+    await FetchLatestMoment();
+    loop();
+})();
