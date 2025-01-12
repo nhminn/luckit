@@ -1,5 +1,4 @@
 {
-    "$schema": "https://json.schemastore.org/chrome-manifest.json",
     "manifest_version": 3,
     "name": "luckit",
     "version": "1.0",
@@ -11,5 +10,15 @@
         "48": "src/assets/icon48.png",
         "128": "src/assets/icon128.png"
     },
-    "permissions": []
+    "permissions": [
+        "storage"
+    ],
+    "background": {
+        "service_worker": "src/services/background.ts",
+        "type": "module"
+    },
+    "author": {
+        "name": "michioxd",
+        "email": "mịchio.haiyaku@gmail.com"
+    }
 }

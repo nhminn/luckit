@@ -7,6 +7,7 @@ import manifest from './manifest.json'
 export default defineConfig({
   plugins: [
     react(),
+    // @ts-expect-error why?
     crx({ manifest }),
   ],
 })
