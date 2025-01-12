@@ -55,7 +55,13 @@ export default function MainScreen() {
             if (result.moments) {
                 chrome.runtime.sendMessage({ clearBadge: true });
                 setMomentLoaded(result.moments as SavedMomentType[]);
-                isNew && setInItem(p => p > 0 ? p + 1 : 0);
+                isNew && setInItem(p => {
+                    if (p > 0) {
+                        setShowNewItemBtn(true);
+                        return p + 1;
+                    }
+                    return 0;
+                });
             }
         });
     }
@@ -64,7 +70,6 @@ export default function MainScreen() {
         handleNewMoment();
         const handler = (message: any) => {
             if (message.newMoment) {
-                setShowNewItemBtn(true);
                 handleNewMoment(true);
             }
         }
@@ -110,9 +115,6 @@ export default function MainScreen() {
     return (
         <div className={cls.MainScreen}>
             <div className={cls.Moment}>
-                <button onClick={() => { setInItem(0); setShowNewItemBtn(false) }} className={clsx("btn", cls.NewBtn, showNewItemBtn && cls.ShowBtn)}>
-                    new moment <span><IoMdArrowRoundUp /></span>
-                </button>
                 {momentLoaded.length < 1 ? (
                     <div className={cls.NoMoment}>
                         <div className={cls.NoImage}>
@@ -122,11 +124,16 @@ export default function MainScreen() {
                         <p>wait a bit for us to hear your friend</p>
                     </div>
                 ) : (
-                    <div className={cls.LsMoment} style={{ transform: `translateY(-${inItem * (100 / momentLoaded.length)}%)` }}>
-                        {momentLoaded.map((moment, index) => (
-                            <MomentItem key={index} moment={moment} />
-                        ))}
-                    </div>
+                    <>
+                        <button onClick={() => { setInItem(0); setShowNewItemBtn(false) }} className={clsx("btn", cls.NewBtn, showNewItemBtn && cls.ShowBtn)}>
+                            new moment <span><IoMdArrowRoundUp /></span>
+                        </button>
+                        <div className={cls.LsMoment} style={{ transform: `translateY(-${inItem * (100 / momentLoaded.length)}%)` }}>
+                            {momentLoaded.map((moment, index) => (
+                                <MomentItem key={index} moment={moment} />
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>
