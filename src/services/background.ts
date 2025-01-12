@@ -120,14 +120,9 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
-function loop() {
-    setTimeout(async () => {
-        await FetchLatestMoment();
-        loop();
-    }, 25e3);
-}
+const loop = async () => {
+    try { await FetchLatestMoment(); } catch (e) { }
+    setTimeout(loop, 25e3);
+};
 
-(async () => {
-    await FetchLatestMoment();
-    loop();
-})();
+(async () => loop())();
