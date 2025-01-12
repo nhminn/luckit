@@ -4,19 +4,53 @@ import cls from "./Login.module.scss";
 import clsx from "clsx";
 import { validateEmail } from "../utils/string";
 import Spinner from "../components/Spinner";
+import { API, GenericError, ResponseError } from "../services/api";
+import { useMainContext } from "../MainContext";
+import { VscClose } from "react-icons/vsc";
 export default function LoginScreen() {
+    const mainCtx = useMainContext();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showWarn, setShowWarn] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = useCallback(() => {
+    const handleLogin = useCallback(async () => {
+        setError("");
         setShowWarn(false);
         setLoading(true);
-    }, []);
+
+        try {
+            const res = await API.login(email, password);
+
+            if (res) {
+                chrome.storage.local.set({
+                    token: res.idToken,
+                    refreshToken: res.refreshToken,
+                }, () => {
+                    mainCtx.setLoggedIn(true);
+                });
+                return;
+            }
+            setError("Cannot login, please try again");
+            setLoading(false);
+        } catch (e: any) {
+            const error = e as ResponseError<GenericError>;
+            setLoading(false);
+            setError(
+                error.error.message === 'INVALID_PASSWORD' ?
+                    'Invalid password' : error.error.message === "EMAIL_NOT_FOUND" ? "Email not found" : "An error occurred (" + error.error.message + ")");
+        }
+    }, [email, mainCtx, password]);
 
     return (
         <div className={clsx(cls.Section, showWarn && cls.s1)}>
+            <div className={clsx(cls.Error, !!error && cls.showErr)}>
+                <span>{error}</span>
+                <div className={cls.Close} onClick={() => setError("")}>
+                    <VscClose />
+                </div>
+            </div>
             <div className={clsx(cls.LoginWarn)}>
                 <div className={cls.Content}>
                     <h1>Before you login...</h1>

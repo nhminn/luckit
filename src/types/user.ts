@@ -28,3 +28,13 @@ export interface ProviderUserInfo {
     email: string;
     rawId: string;
 }
+
+export interface UserInfoType {
+    uid: string;
+    first_name: string;
+    last_name: string;
+    badge: null;
+    profile_picture_url: string;
+    temp: boolean;
+    username: string;
+}

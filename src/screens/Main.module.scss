@@ -1,0 +1,93 @@
+.MainScreen {
+    width: 100%;
+    height: 100%;
+
+    .Moment {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+
+        .Main {
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .Image {
+                width: 100%;
+                aspect-ratio: 1/1;
+                background-color: #222;
+                border-radius: 20px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-image: url('https://images.unsplash.com/photo-1634170380004-3b3b3b3b3b3b');
+
+                .Caption {
+                    width: fit-content;
+                    padding: 0.5rem 1rem;
+                    background-color: #0000009a;
+                    backdrop-filter: blur(10px);
+                    border-radius: 30px;
+                    bottom: 1rem;
+                    position: absolute;
+                    font-size: 13px;
+                    font-family: 'Manrope', sans-serif;
+                }
+            }
+
+            .UserInfo {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                margin: 1rem 0;
+                position: relative;
+
+                .Spacing {
+                    width: 100%;
+                    flex: 1;
+                }
+
+                .Avatar {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 100%;
+                    object-fit: cover;
+                    flex: none;
+                }
+
+                .Name {
+                    font-size: 16px;
+                    font-family: 'Manrope', sans-serif;
+                    font-weight: 600;
+                    margin: 0 0.5rem;
+                }
+
+                .Time {
+                    color: gray;
+                    font-size: 12px;
+                }
+
+                .ChatBtn {
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 100%;
+                    font-size: 23px;
+                    background: #222;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    right: 0;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+}

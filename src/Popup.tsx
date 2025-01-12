@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import LoginScreen from "./screens/Login"
 import LoadingScreen from "./screens/Loading";
 import { MainContext } from "./MainContext";
+import MainScreen from "./screens/Main";
 
 function Popup() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -16,9 +17,12 @@ function Popup() {
         });
     }, []);
 
+    // return <MainScreen />
+
     return (
         <MainContext.Provider value={{ loggedIn, setLoggedIn, loading, setLoading }}>
             {!loggedIn && !loading && <LoginScreen />}
+            {loggedIn && !loading && <MainScreen />}
             {loading && <LoadingScreen />}
         </MainContext.Provider>
     )

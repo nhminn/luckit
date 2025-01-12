@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 export const MainContext = createContext<{
     loggedIn: boolean;
@@ -13,5 +13,5 @@ export const MainContext = createContext<{
 });
 
 export const useMainContext = () => {
-    return MainContext;
+    return useContext(MainContext);
 }

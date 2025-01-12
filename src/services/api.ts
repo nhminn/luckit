@@ -1,10 +1,12 @@
 import { LoginPayloadType, LoginResponseType, RefreshTokenPayloadType } from "../types/auth"
+import { MomentType } from "../types/moments"
+import { GetAccountInfoResponseType, UserInfoType } from "../types/user"
 
-type ResponseError<T> = {
+export type ResponseError<T> = {
     error: T
 }
 
-type GenericError = {
+export type GenericError = {
     code: number,
     message: string,
     errors: {
@@ -59,6 +61,50 @@ export async function fetchFirebase<Request, ResponseOk, ResponseNotOk>({
     });
 }
 
+export async function fetchLocket<Response>({
+    endpoint, method, body, token
+}: {
+    endpoint: string,
+    method: string,
+    body?: any,
+    token?: string
+}) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    if (token) {
+        headers.append('Authorization', `Bearer ${token}`);
+    } else {
+        await new Promise((res) => {
+            chrome.storage.local.get("token", (data) => {
+                headers.append('Authorization', `Bearer ${data.token}`);
+                res(null);
+            });
+        });
+    }
+
+    return new Promise<Response>((res, rej) => {
+        (async () => {
+            try {
+                const response = await fetch(`https://api.locket.com/${endpoint}`, {
+                    method,
+                    headers,
+                    body: JSON.stringify(body)
+                });
+
+                if (response.status !== 200) {
+                    rej(await response.json());
+                    return;
+                }
+
+                res((await response.json()).result?.data as Response);
+            } catch (error) {
+                rej(error);
+            }
+        })();
+    });
+}
+
 export const API = {
     login: (email: string, password: string) => fetchFirebase<LoginPayloadType, LoginResponseType, GenericError>({
         endpoint: "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword",
@@ -78,4 +124,32 @@ export const API = {
             refreshToken: refreshToken
         }
     }),
+    getAccountInfo: (idToken: string) => fetchFirebase<{
+        idToken: string
+    }, GetAccountInfoResponseType, GenericError>({
+        endpoint: "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo",
+        method: "POST",
+        body: {
+            idToken: idToken
+        }
+    }),
+    fetchLatestMoment: () => fetchLocket<MomentType>({
+        endpoint: "getLatestMomentV2",
+        method: "POST",
+        body: {
+            data: {
+                last_fetch: 1,
+                should_count_missed_moments: true
+            }
+        }
+    }),
+    fetchUser: (uid: string) => fetchLocket<UserInfoType>({
+        endpoint: "fetchUserV2",
+        method: "POST",
+        body: {
+            data: {
+                user_uid: uid
+            }
+        }
+    })
 }
