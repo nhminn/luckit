@@ -1,9 +1,9 @@
 export interface GetAccountInfoResponseType {
     kind: "identitytoolkit#GetAccountInfoResponse";
-    users: User[];
+    users: UserType[];
 }
 
-export interface User {
+export interface UserType {
     localId: string;
     email: string;
     displayName: string;
@@ -30,11 +30,13 @@ export interface ProviderUserInfo {
 }
 
 export interface UserInfoType {
-    uid: string;
-    first_name: string;
-    last_name: string;
-    badge: null;
-    profile_picture_url: string;
-    temp: boolean;
-    username: string;
+    data: {
+        uid: string;
+        first_name: string;
+        last_name: string;
+        badge: null;
+        profile_picture_url: string;
+        temp: boolean;
+        username: string;
+    }
 }

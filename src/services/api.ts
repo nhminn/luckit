@@ -1,4 +1,4 @@
-import { LoginPayloadType, LoginResponseType, RefreshTokenPayloadType } from "../types/auth"
+import { LoginPayloadType, LoginResponseType, RefreshTokenPayloadType, RefreshTokenResponseType } from "../types/auth"
 import { MomentType } from "../types/moments"
 import { GetAccountInfoResponseType, UserInfoType } from "../types/user"
 
@@ -86,7 +86,7 @@ export async function fetchLocket<Response>({
     return new Promise<Response>((res, rej) => {
         (async () => {
             try {
-                const response = await fetch(`https://api.locket.com/${endpoint}`, {
+                const response = await fetch(`https://api.locketcamera.com/${endpoint}`, {
                     method,
                     headers,
                     body: JSON.stringify(body)
@@ -97,7 +97,7 @@ export async function fetchLocket<Response>({
                     return;
                 }
 
-                res((await response.json()).result?.data as Response);
+                res((await response.json()).result as Response);
             } catch (error) {
                 rej(error);
             }
@@ -116,7 +116,7 @@ export const API = {
             clientType: "CLIENT_TYPE_IOS"
         }
     }),
-    refreshToken: (refreshToken: string) => fetchFirebase<RefreshTokenPayloadType, LoginResponseType, GenericError>({
+    refreshToken: (refreshToken: string) => fetchFirebase<RefreshTokenPayloadType, RefreshTokenResponseType, GenericError>({
         endpoint: "https://securetoken.googleapis.com/v1/token",
         method: "POST",
         body: {
@@ -133,7 +133,7 @@ export const API = {
             idToken: idToken
         }
     }),
-    fetchLatestMoment: () => fetchLocket<MomentType>({
+    fetchLatestMoment: (token?: string) => fetchLocket<MomentType>({
         endpoint: "getLatestMomentV2",
         method: "POST",
         body: {
@@ -141,15 +141,17 @@ export const API = {
                 last_fetch: 1,
                 should_count_missed_moments: true
             }
-        }
+        },
+        token: token
     }),
-    fetchUser: (uid: string) => fetchLocket<UserInfoType>({
+    fetchUser: (uid: string, token?: string) => fetchLocket<UserInfoType>({
         endpoint: "fetchUserV2",
         method: "POST",
         body: {
             data: {
                 user_uid: uid
             }
-        }
+        },
+        token: token
     })
 }

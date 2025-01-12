@@ -7,6 +7,20 @@
         width: 100%;
         height: 100%;
 
+        .NoMoment {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .NoImage {
+                color: gray;
+                font-size: 180px;
+            }
+        }
+
         .Main {
             width: 100%;
             height: 100%;
@@ -24,7 +38,9 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-image: url('https://images.unsplash.com/photo-1634170380004-3b3b3b3b3b3b');
+                background-image: var(--moment-img);
+                background-size: cover;
+                background-position: center;
 
                 .Caption {
                     width: fit-content;

@@ -7,6 +7,7 @@ import Spinner from "../components/Spinner";
 import { API, GenericError, ResponseError } from "../services/api";
 import { useMainContext } from "../MainContext";
 import { VscClose } from "react-icons/vsc";
+import { UserType } from "../types/user";
 export default function LoginScreen() {
     const mainCtx = useMainContext();
     const [email, setEmail] = useState("");
@@ -24,10 +25,20 @@ export default function LoginScreen() {
             const res = await API.login(email, password);
 
             if (res) {
+                const user = await API.getAccountInfo(res.idToken);
+
+                if (!user.users[0]) {
+                    setError("Cannot get your info, please try again");
+                    setLoading(false);
+                    return;
+                }
+
                 chrome.storage.local.set({
                     token: res.idToken,
                     refreshToken: res.refreshToken,
+                    user: user.users[0] as UserType
                 }, () => {
+                    chrome.runtime.sendMessage({ fetchLatestMoment: true });
                     mainCtx.setLoggedIn(true);
                 });
                 return;

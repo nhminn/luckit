@@ -11,3 +11,35 @@ export function parseJwt(token: string) {
 
     return JSON.parse(jsonPayload);
 }
+
+export const timeSinceOf = function (date: number) {
+
+    const text = [
+        'y', 'mo', 'd', 'h', 'm', 's'
+    ]
+
+    const seconds = Math.floor(((new Date().valueOf()) - (new Date(date).valueOf())) / 1000);
+
+    let interval = seconds / 31536000;
+
+    if (interval > 1) {
+        return Math.floor(interval) + text[0];
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+        return Math.floor(interval) + text[1];
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+        return Math.floor(interval) + text[2];
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+        return Math.floor(interval) + text[3];
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+        return Math.floor(interval) + text[4];
+    }
+    return Math.floor(seconds) + text[5];
+}

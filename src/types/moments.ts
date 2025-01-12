@@ -39,3 +39,16 @@ export interface Background {
     colors: any[];
     material_blur: string;
 }
+
+
+export interface SavedMomentType {
+    user: {
+        username: string;
+        avatar: string;
+        uid: string;
+    },
+    md5: string;
+    thumbnail_url: string;
+    seconds: number;
+    caption: string;
+}

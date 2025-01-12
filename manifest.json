@@ -11,7 +11,8 @@
         "128": "src/assets/icon128.png"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "unlimitedStorage"
     ],
     "background": {
         "service_worker": "src/services/background.ts",
