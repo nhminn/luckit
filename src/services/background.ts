@@ -22,30 +22,28 @@ async function FetchLatestMoment() {
 
     try {
         await API.getAccountInfo(token);
-    } catch (e: any) {
-        if (e?.error?.message === "Unauthenticated") {
-            try {
-                const newToken = await API.refreshToken(refreshToken);
+    } catch {
+        try {
+            const newToken = await API.refreshToken(refreshToken);
 
-                if (!newToken.access_token) {
-                    chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
-                        chrome.runtime.sendMessage({ logout: true });
-                        console.log("token expired, please login again");
-                    });
-                    return;
-                }
-
-                token = newToken.access_token;
-                refreshToken = newToken.refresh_token;
-
-                chrome.storage.local.set({
-                    token,
-                    refreshToken
+            if (!newToken.access_token) {
+                chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
+                    chrome.runtime.sendMessage({ logout: true });
+                    console.log("token expired, please login again");
                 });
-            } catch (e: any) {
-                console.error("Cannot refresh token", e);
                 return;
             }
+
+            token = newToken.access_token;
+            refreshToken = newToken.refresh_token;
+
+            chrome.storage.local.set({
+                token,
+                refreshToken
+            });
+        } catch (e: any) {
+            console.error("Cannot refresh token", e);
+            return;
         }
     }
 

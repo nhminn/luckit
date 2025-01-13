@@ -10,13 +10,38 @@ function Popup() {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState<UserType | null>(null);
 
-    useEffect(() => {
+    const handleUserState = () => {
         chrome.storage.local.get(['token', 'user'], (result) => {
             if (result.token && result.user) {
                 setUserData(result.user as UserType);
                 setLoggedIn(true);
             }
             setLoading(false);
+        });
+    }
+
+    useEffect(() => {
+        handleUserState();
+
+        chrome.storage.onChanged.addListener((changes, namespace) => {
+            if (namespace === 'local') {
+                if (changes.token && changes.user) {
+                    setUserData(changes.user.newValue as UserType);
+                    setLoggedIn(true);
+                }
+            }
+        });
+
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.logout) {
+                setLoggedIn(false);
+                setUserData(null);
+                return;
+            }
+
+            if (message.login) {
+                handleUserState();
+            }
         });
 
     }, []);
