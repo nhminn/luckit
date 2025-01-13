@@ -1,7 +1,37 @@
-import { SavedMomentType } from "../types/moments";
+import { MomentType, SavedMomentType } from "../types/moments";
 import { UserType } from "../types/user";
 import { API } from "./api";
 import { md5 } from 'js-md5';
+
+async function RefreshToken(rT: string): Promise<{
+    token: string;
+    refreshToken: string;
+} | void> {
+    try {
+        const newToken = await API.refreshToken(rT);
+
+        if (!newToken.access_token) {
+            chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
+                chrome.runtime.sendMessage({ logout: true });
+                console.log("token expired, please login again");
+            });
+            return;
+        }
+
+        chrome.storage.local.set({
+            token: newToken.access_token,
+            refreshToken: newToken.refresh_token
+        });
+
+        return {
+            token: newToken.access_token,
+            refreshToken: newToken.refresh_token
+        }
+    } catch (e: any) {
+        console.error("Cannot refresh token", e);
+        return;
+    }
+}
 
 async function FetchLatestMoment() {
     let token = "", refreshToken = "";
@@ -32,28 +62,12 @@ async function FetchLatestMoment() {
 
         isOkay = true;
     } catch {
-        try {
-            const newToken = await API.refreshToken(refreshToken);
+        const tryRefresh = await RefreshToken(refreshToken);
 
-            if (!newToken.access_token) {
-                chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
-                    chrome.runtime.sendMessage({ logout: true });
-                    console.log("token expired, please login again");
-                });
-                return;
-            }
-
-            token = newToken.access_token;
-            refreshToken = newToken.refresh_token;
-
-            chrome.storage.local.set({
-                token,
-                refreshToken
-            });
+        if (tryRefresh?.token && tryRefresh?.refreshToken) {
+            token = tryRefresh.token;
+            refreshToken = tryRefresh.refreshToken;
             isOkay = true;
-        } catch (e: any) {
-            console.error("Cannot refresh token", e);
-            return;
         }
     }
 
@@ -62,9 +76,29 @@ async function FetchLatestMoment() {
         return;
     }
 
-    const moment = await API.fetchLatestMoment(token);
+    let moment: MomentType | null = null;
 
-    if (!moment.data[0]) {
+    try {
+        moment = await API.fetchLatestMoment(token);
+    } catch {
+        isOkay = false;
+        const tryRefresh = await RefreshToken(refreshToken);
+
+        if (tryRefresh?.token && tryRefresh?.refreshToken) {
+            token = tryRefresh.token;
+            refreshToken = tryRefresh.refreshToken;
+            isOkay = true;
+        }
+
+        moment = await API.fetchLatestMoment(token);
+    }
+
+    if (!isOkay) {
+        console.log("Cannot get latest moment due to token expired");
+        return;
+    }
+
+    if (moment && !moment.data[0]) {
         console.log("Cannot get latest moment");
         return;
     }
