@@ -32,7 +32,7 @@ export default function UploaderScreen() {
         setLoading(true);
 
         let userId = "", token = "", refreshToken = "";
-        const imageName = Date.now() + ".webp";
+        const imageName = Date.now() + "_vtd182.webp";
 
         if (await new Promise((ok) => {
             chrome.storage.local.get(['user', 'token', 'refreshToken'], (result) => {
