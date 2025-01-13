@@ -80,6 +80,7 @@ async function FetchLatestMoment() {
 
     try {
         moment = await API.fetchLatestMoment(token);
+        isOkay = true;
     } catch {
         isOkay = false;
         const tryRefresh = await RefreshToken(refreshToken);
@@ -91,6 +92,7 @@ async function FetchLatestMoment() {
         }
 
         moment = await API.fetchLatestMoment(token);
+        isOkay = true;
     }
 
     if (!isOkay) {
@@ -105,7 +107,7 @@ async function FetchLatestMoment() {
 
     const lastMD5 = await new Promise<string>((res) => {
         chrome.storage.local.get(['lastMD5'], (result) => {
-            res(result.lastMD5 || "");
+            res(result.lastMD5 ?? "");
         });
     });
 
@@ -124,8 +126,8 @@ async function FetchLatestMoment() {
                     res(false);
                     return;
                 }
+                res(true);
             }
-
             res(true);
         });
     }) === false) {
@@ -155,7 +157,7 @@ async function FetchLatestMoment() {
                     seconds: thisMoment.date._seconds * 1000,
                     caption: thisMoment.caption
                 } as SavedMomentType,
-                ...result.moments || [],
+                ...result.moments ?? [],
             ] as SavedMomentType[],
         }, () => {
             console.log("new moment saved");
@@ -187,7 +189,7 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 
     if (message.clearAllMoments) {
-        chrome.storage.local.remove(['moments', 'unReadMoments'], () => {
+        chrome.storage.local.remove(['moments', 'unReadMoments', 'lastMD5'], () => {
             chrome.action.setBadgeText({ text: '' });
             chrome.runtime.sendMessage({ newMoment: true });
         });
