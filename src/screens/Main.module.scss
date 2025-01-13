@@ -39,7 +39,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fade 0.3s;
+
+            &:global {
+                animation: fade 0.3s;
+            }
 
             .NoImage {
                 color: gray;
@@ -54,7 +57,10 @@
             overflow: hidden;
             flex-direction: column;
             transition: 0.3s;
-            animation: fade 0.3s;
+
+            &:global {
+                animation: fade 0.3s;
+            }
 
             .Main {
                 width: 100%;
@@ -146,14 +152,4 @@
 
     }
 
-}
-
-@keyframes fade {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
 }

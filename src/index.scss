@@ -13,6 +13,8 @@ html {
 
 :root {
     --global-timing: cubic-bezier(0.8, 0, 0.2, 1);
+    --color: #dadada;
+    --accent: #C773AF;
 }
 
 * {
@@ -106,4 +108,14 @@ input {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

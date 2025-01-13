@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import Popup from './Popup.tsx'
+import '@szhsin/react-menu/dist/index.css';
+import '@szhsin/react-menu/dist/transitions/zoom.css';
 import '@fontsource/manrope/400.css'
 import '@fontsource/manrope/500.css'
 import '@fontsource/manrope/600.css'
@@ -10,6 +12,12 @@ import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import './index.scss'
+
+export const VERSION = '1.0';
+
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
 
 if (!chrome.runtime || !chrome.storage) {
     document.body.innerHTML = '<b>Error:</b> Invalid working environment. Make sure you run it inside a Chrome extension!';

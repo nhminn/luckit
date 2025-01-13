@@ -179,6 +179,12 @@ chrome.runtime.onMessage.addListener((message) => {
         });
         return;
     }
+
+    if (message.actionLogout) {
+        chrome.storage.local.remove(['token', 'refreshToken', 'user'], () => {
+            chrome.runtime.sendMessage({ logout: true });
+        });
+    }
 });
 
 const loop = async () => {

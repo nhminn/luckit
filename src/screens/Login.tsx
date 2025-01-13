@@ -38,7 +38,7 @@ export default function LoginScreen() {
                     refreshToken: res.refreshToken,
                     user: user.users[0] as UserType
                 }, () => {
-                    chrome.runtime.sendMessage({ fetchLatestMoment: true });
+                    chrome.runtime.sendMessage({ fetchLatestMoment: true, login: true });
                     mainCtx.setLoggedIn(true);
                 });
                 return;

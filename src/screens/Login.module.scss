@@ -52,6 +52,10 @@
         justify-content: center;
         transition: 0.2s;
 
+        &:global {
+            animation: fade 0.3s;
+        }
+
         .Intro {
             margin: 2rem;
             margin-top: 1rem;
