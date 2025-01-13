@@ -1,4 +1,5 @@
 import { SavedMomentType } from "../types/moments";
+import { UserType } from "../types/user";
 import { API } from "./api";
 import { md5 } from 'js-md5';
 
@@ -20,8 +21,16 @@ async function FetchLatestMoment() {
         return;
     }
 
+    let isOkay = false;
+
     try {
-        await API.getAccountInfo(token);
+        const accInfo = await API.getAccountInfo(token);
+
+        chrome.storage.local.set({
+            user: accInfo.users[0] as UserType || {}
+        });
+
+        isOkay = true;
     } catch {
         try {
             const newToken = await API.refreshToken(refreshToken);
@@ -41,10 +50,16 @@ async function FetchLatestMoment() {
                 token,
                 refreshToken
             });
+            isOkay = true;
         } catch (e: any) {
             console.error("Cannot refresh token", e);
             return;
         }
+    }
+
+    if (!isOkay) {
+        console.log("Cannot get user info");
+        return;
     }
 
     const moment = await API.fetchLatestMoment(token);
@@ -64,7 +79,6 @@ async function FetchLatestMoment() {
     const thisMoment = moment.data[0];
 
     if (lastMD5 === currentMD5) {
-        console.log("no new moment");
         return;
     }
 
@@ -110,6 +124,7 @@ async function FetchLatestMoment() {
                 ...result.moments || [],
             ] as SavedMomentType[],
         }, () => {
+            console.log("new moment saved");
             chrome.runtime.sendMessage({ newMoment: true });
             chrome.action.setBadgeBackgroundColor({ color: '#C773AF' }, () => {
                 chrome.action.setBadgeText({ text: (result.unReadMoments + 1).toString() });
