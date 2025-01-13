@@ -57,7 +57,9 @@ export default function GlobalScreen() {
                         <span className={cls.Name}>{mainCtx?.userData?.displayName ? mainCtx?.userData?.displayName : mainCtx?.userData?.email}</span>
                     </>
                 } menuClassName={cls.Menu} className={cls.AccountMenu}>
-                    <MenuItem className={menuItemClassName}>
+                    <MenuItem onClick={() => {
+                        chrome.runtime.sendMessage({ clearAllMoments: true });
+                    }} className={menuItemClassName}>
                         <AiOutlineClear />
                         Clear all saved moments
                     </MenuItem>

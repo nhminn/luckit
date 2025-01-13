@@ -185,6 +185,13 @@ chrome.runtime.onMessage.addListener((message) => {
             chrome.runtime.sendMessage({ logout: true });
         });
     }
+
+    if (message.clearAllMoments) {
+        chrome.storage.local.remove(['moments', 'unReadMoments'], () => {
+            chrome.action.setBadgeText({ text: '' });
+            chrome.runtime.sendMessage({ newMoment: true });
+        });
+    }
 });
 
 const loop = async () => {
