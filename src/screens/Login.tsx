@@ -50,7 +50,10 @@ export default function LoginScreen() {
             setLoading(false);
             setError(
                 error.error.message === 'INVALID_PASSWORD' ?
-                    'Invalid password' : error.error.message === "EMAIL_NOT_FOUND" ? "Email not found" : "An error occurred (" + error.error.message + ")");
+                    'Invalid password' : error.error.message === "EMAIL_NOT_FOUND" ? "Email not found" :
+                        error.error.message === "INVALID_EMAIL" ? "Invalid email" :
+                            error.error.message === "USER_DISABLED" ? "User is disabled" :
+                                "An error occurred (" + error.error.message + ")");
         }
     }, [email, mainCtx, password]);
 

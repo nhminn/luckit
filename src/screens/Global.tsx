@@ -12,6 +12,9 @@ import { VERSION } from "../const";
 import { MdRefresh } from "react-icons/md";
 import { useState } from "react";
 import { SavedMomentType } from "../types/moments";
+import SavedMoment from "./SavedMoments";
+import { IoChevronBack } from "react-icons/io5";
+import AboutScreen from "./About";
 
 const menuItemClassName = ({ hover }: { hover: boolean }) =>
     clsx(cls.MenuItem, hover && cls.hover);
@@ -38,10 +41,14 @@ const RefreshMenuItem = () => {
 export default function GlobalScreen() {
     const mainCtx = useMainContext();
     const [inItem, setInItem] = useState(0);
+    const [section, setSection] = useState(0);
 
     return (
-        <div className={cls.Global}>
-            <Menu menuClassName={cls.Menu} menuButton={<MenuButton className={cls.MenuBtn}>
+        <div className={cls.Global} data-section={section}>
+            <div onClick={() => setSection(0)} className={clsx(cls.MenuBtn, cls.BackBtn)}>
+                <IoChevronBack />
+            </div>
+            <Menu menuClassName={cls.Menu} menuButton={<MenuButton className={clsx(cls.MenuBtn, cls.MainMenuBtn)}>
                 <PiDotsThreeOutlineVerticalLight />
             </MenuButton>} transition>
                 <SubMenu label={
@@ -62,14 +69,14 @@ export default function GlobalScreen() {
                         Logout
                     </MenuItem>
                 </SubMenu>
-                <MenuItem href="https://github.com/michioxd/luckit" target="_blank" className={menuItemClassName}>
+                <MenuItem onClick={() => setSection(2)} className={menuItemClassName}>
                     <IoMdHeartEmpty />
-                    luckit v{VERSION}
+                    about luckit v{VERSION}
                 </MenuItem>
                 <RefreshMenuItem />
-                <MenuItem className={menuItemClassName}>
+                <MenuItem onClick={() => setSection(1)} className={menuItemClassName}>
                     <GrAppsRounded />
-                    All saved moments
+                    Saved moments
                 </MenuItem>
                 <MenuItem onClick={() => {
                     chrome.storage.local.get(['moments'], (result) => {
@@ -89,10 +96,21 @@ export default function GlobalScreen() {
                     Download this image
                 </MenuItem>
             </Menu>
-            <MainScreen
-                inItem={inItem}
-                setInItem={setInItem}
-            />
+            <div className={cls.Section} data-section="0">
+                <MainScreen
+                    inItem={inItem}
+                    setInItem={setInItem}
+                />
+            </div>
+            <div className={cls.Section} data-section="1">
+                <SavedMoment setInItem={(i: number) => {
+                    setInItem(i);
+                    setSection(0);
+                }} />
+            </div>
+            <div className={cls.Section} data-section="2">
+                <AboutScreen />
+            </div>
         </div>
     )
 }
