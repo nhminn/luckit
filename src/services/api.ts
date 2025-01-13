@@ -17,12 +17,13 @@ export type GenericError = {
 }
 
 export async function fetchFirebase<Request, ResponseOk, ResponseNotOk>({
-    endpoint, method, body, token
+    endpoint, method, body, token, noKey = false
 }: {
     endpoint: string,
     method: string,
     body?: Request,
-    token?: string
+    token?: string,
+    noKey?: boolean
 }) {
 
     const headers = new Headers();
@@ -42,7 +43,7 @@ export async function fetchFirebase<Request, ResponseOk, ResponseNotOk>({
     return new Promise<ResponseOk>((res, rej) => {
         (async () => {
             try {
-                const response = await fetch(`${endpoint}?key=AIzaSyCQngaaXQIfJaH0aS2l7REgIjD7nL431So`, {
+                const response = await fetch(noKey ? endpoint : `${endpoint}?key=AIzaSyCQngaaXQIfJaH0aS2l7REgIjD7nL431So`, {
                     method,
                     headers,
                     body: JSON.stringify(body)
@@ -153,5 +154,38 @@ export const API = {
             }
         },
         token: token
+    }),
+    createPost: (thumbUrl: string, caption: string, token?: string) => fetchLocket<any>({
+        endpoint: "postMomentV2",
+        method: "POST",
+        token: token,
+        body: {
+            data: !caption ? {
+                thumbnail_url: thumbUrl,
+                recipients: [],
+                overlays: []
+            } : {
+                caption,
+                thumbnail_url: thumbUrl,
+                recipients: [],
+                overlays: [
+                    {
+                        overlay_id: "caption:standard",
+                        overlay_type: "caption",
+                        data: {
+                            text_color: "#FFFFFFE6",
+                            text: caption,
+                            type: "standard",
+                            max_lines: 4,
+                            background: {
+                                colors: [],
+                                material_blur: "ultra-thin"
+                            }
+                        },
+                        alt_text: caption
+                    }
+                ]
+            }
+        }
     })
 }

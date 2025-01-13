@@ -5,7 +5,7 @@ import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
 import clsx from "clsx";
 import { useMainContext } from "../MainContext";
 import { IoMdHeartEmpty } from "react-icons/io";
-import { HiLogout, HiOutlineDownload } from "react-icons/hi";
+import { HiLogout, HiOutlineDownload, HiOutlineUpload } from "react-icons/hi";
 import { GrAppsRounded } from "react-icons/gr";
 import { AiOutlineClear } from "react-icons/ai";
 import { VERSION } from "../const";
@@ -15,6 +15,7 @@ import { SavedMomentType } from "../types/moments";
 import SavedMoment from "./SavedMoments";
 import { IoChevronBack } from "react-icons/io5";
 import AboutScreen from "./About";
+import UploaderScreen from "./Uploader";
 
 const menuItemClassName = ({ hover }: { hover: boolean }) =>
     clsx(cls.MenuItem, hover && cls.hover);
@@ -80,6 +81,10 @@ export default function GlobalScreen() {
                     <GrAppsRounded />
                     Saved moments
                 </MenuItem>
+                <MenuItem onClick={() => setSection(3)} className={menuItemClassName}>
+                    <HiOutlineUpload />
+                    Upload image
+                </MenuItem>
                 <MenuItem onClick={() => {
                     chrome.storage.local.get(['moments'], (result) => {
                         if (result.moments) {
@@ -88,7 +93,7 @@ export default function GlobalScreen() {
                             if (!moment) return;
                             chrome.downloads.download({
                                 url: moment.thumbnail_url,
-                                filename: moment.md5 + ".webp",
+                                filename: Date.now() + ".webp",
                                 saveAs: true
                             });
                         }
@@ -112,6 +117,9 @@ export default function GlobalScreen() {
             </div>
             <div className={cls.Section} data-section="2">
                 <AboutScreen />
+            </div>
+            <div className={cls.Section} data-section="3">
+                <UploaderScreen />
             </div>
         </div>
     )

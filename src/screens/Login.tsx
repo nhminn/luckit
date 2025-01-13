@@ -59,9 +59,9 @@ export default function LoginScreen() {
 
     return (
         <div className={clsx(cls.Section, showWarn && cls.s1)}>
-            <div className={clsx(cls.Error, !!error && cls.showErr)}>
+            <div className={clsx("Error", !!error && "showErr")}>
                 <span>{error}</span>
-                <div className={cls.Close} onClick={() => setError("")}>
+                <div className={"Close"} onClick={() => setError("")}>
                     <VscClose />
                 </div>
             </div>
@@ -100,7 +100,7 @@ export default function LoginScreen() {
                 </div>
                 <div className={cls.Form}>
                     <input
-                        className={cls.Input}
+                        className={clsx("input", cls.Input)}
                         disabled={loading}
                         type="text"
                         placeholder="email"
@@ -108,7 +108,7 @@ export default function LoginScreen() {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <input
-                        className={cls.Input}
+                        className={clsx("input", cls.Input)}
                         disabled={loading}
                         type="password"
                         placeholder="password"

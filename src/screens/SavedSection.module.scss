@@ -5,11 +5,13 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 0.5rem;
     background: #000;
-
     padding: 1rem;
     padding-right: 0.5rem;
+    align-content: flex-start;
 
     .Moment {
         width: calc(100% / 3 - 0.5rem);

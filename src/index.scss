@@ -70,7 +70,7 @@ a {
     background-clip: content-box
 }
 
-input {
+.input {
     font-family: 'Manrope', sans-serif;
     font-size: 1rem;
     padding: 1rem;
@@ -142,5 +142,47 @@ input {
 
     to {
         opacity: 1;
+    }
+}
+
+.Error {
+    width: calc(100% - 2rem);
+    background: rgb(80, 37, 37);
+    color: #eee;
+    padding: 1rem;
+    border-radius: 5px;
+    padding: 1rem;
+    margin: 1rem;
+    font-size: 12px;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 9;
+    transition: 0.2s;
+    visibility: hidden;
+    opacity: 0;
+    top: -10px;
+
+
+    &.showErr {
+        visibility: visible;
+        opacity: 1;
+        top: 0;
+    }
+
+    span {
+        width: 100%;
+    }
+
+    .Close {
+        font-size: 30px;
+        cursor: pointer;
+        margin-left: 1rem;
+        height: fit-content;
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }

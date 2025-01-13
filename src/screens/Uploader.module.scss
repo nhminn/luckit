@@ -1,0 +1,76 @@
+.Uploader {
+    width: 100%;
+
+    .UploadBtn {
+        width: 140px;
+    }
+
+    .UploaderOverlay {
+        width: 90%;
+        height: 90%;
+        position: absolute;
+        border: 2px dashed gray;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .Icon {
+            font-size: 180px;
+            color: gray;
+        }
+
+        h2,
+        p {
+            color: gray;
+        }
+    }
+
+    .UploadInput {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 4;
+    }
+
+
+    .editCaption {
+        width: fit-content;
+        height: fit-content;
+        font-size: 12px;
+        font-family: 'Manrope', sans-serif;
+        color: var(--color);
+        background: transparent;
+        border: none;
+        outline: none;
+    }
+
+    .CloseBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        font-size: 25px;
+        background: #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        transition: 0.2s;
+        outline: none;
+        border: none;
+
+
+        &:hover {
+            background: #111;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+}
