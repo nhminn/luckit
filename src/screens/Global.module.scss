@@ -55,6 +55,10 @@
                 margin-right: 0.5rem;
             }
 
+            &:disabled *,
+            &:disabled {
+                cursor: not-allowed !important;
+            }
         }
 
         .AccountMenu {

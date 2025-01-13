@@ -45,12 +45,11 @@ function MomentItem({ moment }: { moment: SavedMomentType }) {
     )
 }
 
-export default function MainScreen() {
+export default function MainScreen({ inItem, setInItem }: { inItem: number, setInItem: React.Dispatch<React.SetStateAction<number>> }) {
     const [momentLoaded, setMomentLoaded] = useState<SavedMomentType[]>([]);
-    const [inItem, setInItem] = useState(0);
     const [showNewItemBtn, setShowNewItemBtn] = useState(false);
 
-    const handleNewMoment = (isNew?: boolean) => {
+    const handleNewMoment = useCallback((isNew?: boolean) => {
         chrome.storage.local.get(['moments'], (result) => {
             if (result.moments) {
                 chrome.runtime.sendMessage({ clearBadge: true });
@@ -66,21 +65,23 @@ export default function MainScreen() {
                 }
             }
         });
-    }
+    }, [setInItem]);
 
     useEffect(() => {
         handleNewMoment();
         const handler = (message: any) => {
             if (message.newMoment) {
                 handleNewMoment(true);
+                return;
             }
         }
+
         chrome.runtime.onMessage.addListener(handler);
 
         return () => {
             chrome.runtime.onMessage.removeListener(handler);
         }
-    }, []);
+    }, [handleNewMoment]);
 
     const handleChangeTile = useCallback((add: boolean) => {
         setInItem(p => {
@@ -92,7 +93,7 @@ export default function MainScreen() {
                 return p - 1;
             }
         })
-    }, [momentLoaded]);
+    }, [momentLoaded.length, setInItem]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {

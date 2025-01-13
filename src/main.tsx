@@ -13,11 +13,11 @@ import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import './index.scss'
 
-export const VERSION = '1.0';
-
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-});
+if (process.env.NODE_ENV !== 'development') {
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+}
 
 if (!chrome.runtime || !chrome.storage) {
     document.body.innerHTML = '<b>Error:</b> Invalid working environment. Make sure you run it inside a Chrome extension!';
