@@ -14,6 +14,11 @@ If you are not comfortable with this or you don't know what you are doing, pleas
 
 I (creator of this extension) will not be held responsible for any consequences.
 
+## Features
+
+- Save moments in background while you using your browser.
+- Upload image.
+
 ## Installation
 
 [![Get it on Google Chrome Web Store](https://github.com/user-attachments/assets/2f324143-0532-45a8-aa87-b4d1afaece79)](https://chromewebstore.google.com/detail/luckit/gkpedjnafgjmkjlcfcgcjonblhjiifmo)
