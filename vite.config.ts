@@ -24,11 +24,6 @@ export default defineConfig({
       format: {
         comments: false
       }
-    },
-    rollupOptions: {
-      external: [
-        "./backend/**"
-      ]
     }
   }
 })
