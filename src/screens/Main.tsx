@@ -123,8 +123,8 @@ export default function MainScreen({ inItem, setInItem }: { inItem: number, setI
                         <div className={cls.NoImage}>
                             <MdOutlineImageNotSupported />
                         </div>
-                        <h2>no moment to show right now...</h2>
-                        <p>wait a bit for us to hear your friend</p>
+                        <h2>no photos at the moment</h2>
+                        <p>we will try to capture them ASAP!</p>
                     </div>
                 ) : (
                     <>
