@@ -1,3 +1,5 @@
+**English 🇺🇸** | [Tiếng Việt 🇻🇳](README.vi.md)
+
 # luckit
 
 `/ˈlʌkɪt/`
@@ -32,20 +34,26 @@ I (creator of this extension) will not be held responsible for any consequences.
 ## Development
 
 - Clone this repository
+
   ```sh
   git clone https://github.com/michioxd/luckit
 
   # Go to luckit directory
   cd luckit
   ```
+
 - Install dependencies
+
   ```sh
   pnpm i
   ```
+
 - Run development server
+
   ```sh
   pnpm run dev
   ```
+
 - Click "Load unpacked" in Extensions page, select the `dist` folder.
 
 ## Screenshots
